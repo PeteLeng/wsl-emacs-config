@@ -1,5 +1,8 @@
 ;; PDF
 (straight-use-package 'pdf-tools)
+(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
+(unless (fboundp 'pdf-view-mode)
+  (autoload #'pdf-view-mode "pdf-view" nil t))
 (with-eval-after-load "pdf-tools"
   (pdf-tools-install)
   (setq-default pdf-view-display-size 'fit-width)
@@ -12,7 +15,12 @@
   ;; Shorter keybindings
   (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
   (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
-  (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete))
+  (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete)
+  )
+
+(defun mech-pdfview-mode-hook ()
+  (display-line-numbers-mode -1))
+(add-hook 'pdf-view-mode-hook #'mech-pdfview-mode-hook)
 
 ;; EPUB
 (straight-use-package 'nov)
