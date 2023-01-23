@@ -1,0 +1,89 @@
+;; Configuration
+(defvar completion-framework "bridge")
+
+;; Orderless
+(straight-use-package 'orderless)
+(require 'orderless)
+;; (setq-local completion-styles '(basic orderless))
+(setq completion-styles '(basic orderless))
+
+;; Vertico
+(straight-use-package 'vertico)
+(require 'vertico)
+(vertico-mode)
+
+;; Company
+(when (equal completion-framework "company")
+  (straight-use-package 'company)
+  (require 'company)
+  ;; source: https://www.reddit.com/r/emacs/comments/m52nky/comment/gr2ap03/?utm_source=share&utm_medium=web2x&context=3
+  (setq
+   company-minimum-prefix-length 1
+   company-idle-delay 0.1
+   company-tooltip-limit 10
+   company-tooltip-align-annotations t		;; Align annotations to the right
+   company-require-match nil			;; Allow free typing
+   company-dabbrev-ignore-case 'keep-prefix	;; Keep prefix at completion
+   company-dabbrev-downcase nil			;; Don't automatically downcase completions
+   )
+  ;; Source: https://stackoverflow.com/a/11573802/17006775
+  ;; (setq company-backends (remove 'company-clang company-backends))
+  ;; Make dabbrev ignore pdf buffers
+  (setq company-dabbrev-ignore-buffers ".*\\.pdf")
+  (setq company-global-modes '(not shell-mode eshell-mode))
+  (delete 'company-clang company-backends)
+  (global-company-mode)
+  )
+
+;; corfu
+;; lsp with corfu is so slow that it's unusable
+(when (eq completion-framework "corfu")
+  (straight-use-package 'corfu)
+  (global-corfu-mode)
+  (setq
+   corfu-auto t
+   corfu-auto-delay 0.4 ;; Lower delay hangs while higher delay just won't complete anything
+   corfu-quit-no-match 'separator
+   ))
+
+;; Completion on wsl emacs shell is simply too slow
+;; Had to turn off company completely, done through configuring company-global-modes
+;; A possible solution is to configure the backend to stop searching windows file path.
+(defun mech-completion-shell-hook ()
+  ;; (setq-local completion-styles '(basic))
+  ;; (setq-local corfu-auto nil)
+  )
+(add-hook 'shell-mode-hook #'mech-completion-shell-hook)
+(add-hook 'eshell-mode-hook #'mech-completion-shell-hook)
+
+;; (dolist (path exec-path)
+;;   (insert (concat path "\n")))
+
+(defun sh-completion-table-exclude-path (orig &rest args)
+  (let ((exec-path exec-path))
+    (dolist (path exec-path)
+      (if (booleanp (compare-strings "/mnt/c" nil nil path nil 6))
+          (setq exec-path (remove path exec-path))))
+    ;; (dolist (path exec-path)
+    ;;   (insert (concat path "\n")))
+    (apply orig args)
+    ))
+
+(unless (fboundp 'sh--cmd-completion-table-gen)
+  (autoload #'sh--cmd-completion-table-gen "sh-script" nil nil))
+
+(advice-add 'sh--cmd-completion-table-gen :around #'sh-completion-table-exclude-path)
+
+;; Lsp-bridge (aims to be the fastest lsp client out there)
+;; Dependencies
+(straight-use-package 'posframe)
+(straight-use-package '(markdown-mode :type git :host github :repo "jrblevin/markdown-mode"))
+
+(when (equal completion-framework "bridge")
+  (straight-use-package `(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
+				   :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive)))
+  (require 'lsp-bridge)
+  (global-lsp-bridge-mode)
+  )
+
+;;; mech-completion.el ends here
