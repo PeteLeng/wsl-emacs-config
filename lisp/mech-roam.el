@@ -37,15 +37,18 @@
     
   (setq org-roam-node-display-template
 	(concat "${title:60} "
-		(propertize "${dir-name:10}" 'face 'org-tag)
+		(propertize "${dir-name:20}" 'face 'org-tag)
 		(propertize "${tags:10}" 'face 'org-tag)))
 
   ;; Subdirectories
   (let ((templates
 	 '(("a" "archives" plain nil
 	    :target (file+head "archs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") :unnarrowed t)
-	   ("l" "lectures" plain nil
-	    :target (file+head "lects/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") :unnarrowed t))
+	   ("c" "Courses")
+	   ("ca" "assignments" plain nil
+	    :target (file+head "courses/asgmts/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") :unnarrowed t)
+	   ("cl" "lectures" plain nil
+	    :target (file+head "courses/lects/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") :unnarrowed t))
 		   ))
     (dolist (tmpl templates)
       (push tmpl org-roam-capture-templates)))
