@@ -110,10 +110,14 @@
     (autoload #'lsp-deferred "lsp-mode" nil nil))
   (add-hook 'c-mode-hook #'lsp-deferred)
 
+  ;; Python mode
   (straight-use-package 'lsp-pyright)
+  ;; https://github.com/emacs-lsp/lsp-pyright/issues/6
+  (setq lsp-pyright-multi-root nil)
   (add-hook 'python-mode-hook #'(lambda ()
 				  (require 'lsp-pyright)
 				  ))
+  
   (add-hook 'python-mode-hook #'lsp-deferred)
   (add-hook 'rust-mode-hook #'lsp-deferred)
   (add-hook 'sh-mode-hook #'lsp-deferred)

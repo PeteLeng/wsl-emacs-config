@@ -85,7 +85,13 @@
   ;;  `(fixed-pitch
   ;;    ((t (:family "JetBrains Mono"))))
   ;;  )
-  (add-to-list 'default-frame-alist '(font . "Fira Code"))
+  (if (string-equal (getenv "MONITOR") "on")
+      (progn
+	(message "Monitor on")
+	(add-to-list 'default-frame-alist '(font . "Cascadia Code")))
+    (progn
+      (message "Monitor off")
+      (add-to-list 'default-frame-alist '(font . "Cascadia Code-14"))))
 
   ;; Editing
   (electric-pair-mode)

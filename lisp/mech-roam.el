@@ -40,18 +40,36 @@
 		(propertize "${dir-name:20}" 'face 'org-tag)
 		(propertize "${tags:10}" 'face 'org-tag)))
 
+  ;; Integration with org mode
+  (let ((proj-dirs
+	 (file-expand-wildcards (file-name-concat org-roam-directory "/projs/*.org") t)))
+    (setq org-refile-targets (list (cons proj-dirs (cons :level 1))))
+    )
+
   ;; Subdirectories
-  (let ((templates
-	 '(("a" "archives" plain nil
-	    :target (file+head "archs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") :unnarrowed t)
-	   ("c" "Courses")
-	   ("ca" "assignments" plain nil
-	    :target (file+head "courses/asgmts/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") :unnarrowed t)
-	   ("cl" "lectures" plain nil
-	    :target (file+head "courses/lects/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") :unnarrowed t))
-		   ))
-    (dolist (tmpl templates)
-      (push tmpl org-roam-capture-templates)))
+  (defvar roam-templates
+    '(("p" "projects" plain
+       nil
+       :target (file+head "projs/%<%Y%m%d%H%M%S>-${slug}.org"
+			  ":PROPERTIES:\n:DATE_CREATED: %U\n:END:\n#+title: ${title}")
+       :unnarrowed t)
+      ("a" "archives" plain
+       nil
+       :target (file+head "archs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
+       :unnarrowed t)
+      ("c" "Courses")
+      ("ca" "assignments" plain
+       nil
+       :target (file+head "courses/asgmts/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
+       :unnarrowed t)
+      ("cl" "lectures" plain
+       nil
+       :target (file+head "courses/lects/%<%Y%m%d%H%M%S>-${slug}.org"
+			  ":PROPERTIES:\n:DATA_CREATED: %U\n:END:\n#+title: ${title}\n")
+       :unnarrowed t)))
+  ;; (dolist (tmpl templates)
+  ;;   (push tmpl org-roam-capture-templates))
+  (setq org-roam-capture-templates (nconc org-roam-capture-templates roam-templates))
   
   )
 

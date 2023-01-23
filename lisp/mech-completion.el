@@ -2,7 +2,7 @@
 (defvar completion-framework "company")
 (when (equal system-type 'gnu/linux)
     ;; Toggle completion framework on linux
-    (setq completion-framework nil))
+    (setq completion-framework "company"))
 
 ;; Orderless
 (straight-use-package 'orderless)

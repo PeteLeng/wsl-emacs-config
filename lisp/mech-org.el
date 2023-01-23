@@ -80,6 +80,7 @@
 ;; Eye Candies
 (straight-use-package 'org-bullets)
 (with-eval-after-load 'org-bullets
+  ;; ◉ ● ○ •
   (setq org-bullets-bullet-list '("◉" "•" "•" "•" "•" "•" "•" "•"))
   )
 (add-hook 'org-mode-hook #'org-bullets-mode)
@@ -102,5 +103,18 @@
 (define-key global-map (kbd "C-c a") 'org-agenda)
 (define-key global-map (kbd "C-c c") 'org-capture)
 ;; (define-key global-map (kbd "") 'org-insert-todo-heading)
+
+;; Other
+(with-eval-after-load 'org
+  ;; Collapsed view
+  (setq org-startup-folded 'nofold)
+
+  ;; Distinguish org web links
+  (defface org-web-link
+    '((t (:inherit org-link :slant italic)))
+    "Org Web link")
+  (org-link-set-parameters "http" :face 'org-web-link)
+  (org-link-set-parameters "https" :face 'org-web-link)
+  )
 
 ;;; mech-org.el ends here.

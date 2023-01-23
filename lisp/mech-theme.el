@@ -1,15 +1,30 @@
+(defvar mech-theme 'box)
 
 ;; VS code theme
 ;; (straight-use-package 'vscode-dark-plus-theme)
 ;; (require 'vscode-dark-plus-theme)
 ;; (load-theme 'vscode-dark-plus t)
 
+;; Tomorrow theme
+(when (equal mech-theme 'tmr)
+  ;; (straight-use-package '(tomorrow-theme :type git :host github :repo "ChrisKempson/Tomorrow-Theme"))
+  ;; (require 'color-theme-tomorrow)
+  
+  (straight-use-package 'color-theme-sanityinc-tomorrow)
+  (require 'color-theme-sanityinc-tomorrow)
+  (load-theme 'sanityinc-tomorrow-night t t)
+  (load-theme 'sanityinc-tomorrow-eighties t t)
+  (enable-theme 'sanityinc-tomorrow-night)
+  )
+
 ;; Gruvbox
-(straight-use-package 'gruvbox-theme)
-(require 'gruvbox-theme)
-(load-theme 'gruvbox-dark-hard t t)
-(load-theme 'gruvbox-light-hard t t)
-(enable-theme 'gruvbox-dark-hard)
+(when (equal mech-theme 'box)
+  (straight-use-package 'gruvbox-theme)
+  (require 'gruvbox-theme)
+  (load-theme 'gruvbox-dark-hard t t)
+  (load-theme 'gruvbox-light-hard t t)
+  (enable-theme 'gruvbox-dark-hard)
+  )
 
 ;; Customization
 ;; (deftheme mechanicus "I love to sail forbidden seas.")
@@ -64,6 +79,7 @@
      `(org-block-begin-line ((t (:background ,code-block-bg-color :extend t))))
      `(org-block-end-line ((t (:background ,code-block-bg-color :extend t))))
      `(org-block ((t (:background ,code-block-bg-color))))
+     `(org-document-title ((t (:height ,header-height :weight bold :underline t))))
      )
     )
   )
