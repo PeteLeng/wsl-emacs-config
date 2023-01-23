@@ -79,8 +79,9 @@
 
   (straight-use-package 'lsp-pyright)
   (add-hook 'python-mode-hook #'(lambda ()
-				  (require 'lsp-pyright)
-				  lsp-deferred))
+				    (require 'lsp-pyright)
+				    ))
+  (add-hook 'python-mode-hook #'lsp-deferred)
   (add-hook 'rust-mode-hook #'lsp-deferred)
   )
 

@@ -41,10 +41,15 @@
 	 (header-height 1.1)
 	 (link-fg-color "#8751be")
 	 (inline-code-fg-color "#c2261f")
+	 ;; gtk colors are less contrasting
 	 (inline-code-bg-color
-	  (color-lighten-name default-bg-color 20))
+	  (cond
+	   ((equal system-type 'windows-nt) (color-lighten-name default-bg-color 10))
+	   ((equal system-type 'gnu/linux) (color-lighten-name default-bg-color 30))))
 	 (code-block-bg-color
-	  (color-darken-name default-bg-color 10))
+	  (cond
+	   ((equal system-type 'windows-nt) (color-darken-name default-bg-color 10))
+	   ((equal system-type 'gnu/linux) (color-darken-name default-bg-color 30))))
 	 )
     (custom-set-faces
      `(org-level-1 ((t :height ,header-height))))

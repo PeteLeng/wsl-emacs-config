@@ -9,6 +9,8 @@
 ;; - performance
 ;;   - gc
 
+(defvar debug t)
+
 (defun mech-core-keybindings ()
   ;; windows-key to super-key on Windows
   (if (string-equal system-type "windows-nt")
@@ -71,7 +73,7 @@
    t
    'symbol
    (cond
-    ((equal system-type 'windows-nt) (cond ((member "Symbola" (font-family-list))) "Symbola"))
+    ((equal system-type 'windows-nt) (cond ((member "MesloLGM Nerd Font Mono" (font-family-list)) "MesloLGM Nerd Font Mono")))
     ((equal system-type 'gnu/linux) (cond ((member "Symbola" (font-family-list)) "Symbola")))
     ))
   
@@ -118,7 +120,7 @@
 
   ;; Other
   (setq use-package-expand-minimally t)
-  (setq debug-on-error t) ;; set to t for debugging
+  (setq debug-on-error debug) ;; set to t for debugging
   )
 
 (provide 'mech-core)

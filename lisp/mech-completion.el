@@ -1,5 +1,5 @@
 ;; Configuration
-(defvar completion-framework "bridge")
+(defvar completion-framework "company")
 
 ;; Orderless
 (straight-use-package 'orderless)
@@ -80,8 +80,15 @@
 (straight-use-package '(markdown-mode :type git :host github :repo "jrblevin/markdown-mode"))
 
 (when (equal completion-framework "bridge")
-  (straight-use-package `(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
-				   :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive)))
+  (cond
+   ((equal system-type 'gnu/linux)
+    (straight-use-package `(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
+				       :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive))))
+     
+   ;; Wierd bugs on windows that cannot create symlink for .dz files
+   ((equal system-type 'windows-nt)
+    (straight-use-package `(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
+				     :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive)))))
   (require 'lsp-bridge)
   (global-lsp-bridge-mode)
   )

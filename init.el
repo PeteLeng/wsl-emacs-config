@@ -3,7 +3,7 @@
 (mech-core)
 
 ;; package management, straight
-(require 'use-package-core) ;; https://github.com/radian-software/straight.el/issues/1035
+;; (require 'use-package-core) ;; https://github.com/radian-software/straight.el/issues/1035
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
