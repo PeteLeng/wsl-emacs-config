@@ -1,5 +1,7 @@
 ;; Configuration
 (defvar lang-server-framework "lsp-mode")
+(unless completion-framework
+  (setq lang-server-framework "bridge"))
 
 ;; flycheck
 (straight-use-package 'flycheck)
@@ -45,9 +47,28 @@
 
 ;; JS
 
+;; Lsp-Bridge (aims to be the fastest lsp client out there)
+;; Dependencies
+(straight-use-package 'posframe)
+(straight-use-package '(markdown-mode :type git :host github :repo "jrblevin/markdown-mode"))
+
+(when (equal lang-server-framework "bridge")
+  (cond
+   ((equal system-type 'gnu/linux)
+    (straight-use-package `(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
+				       :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive))))
+     
+   ;; Wierd bugs on windows that cannot create symlink for .dz files
+   ((equal system-type 'windows-nt)
+    (straight-use-package `(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
+				     :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive)))))
+  (require 'lsp-bridge)
+  (global-lsp-bridge-mode)
+  )
+
+
 ;; LSP
-(when (and (not (equal completion-framework "bridge"))
-	   (equal lang-server-framework "lsp-mode"))
+(when (equal lang-server-framework "lsp-mode")
   (straight-use-package 'lsp-mode)
   (setq lsp-keymap-prefix "C-c l")
   (with-eval-after-load "lsp-mode"
@@ -79,8 +100,8 @@
 
   (straight-use-package 'lsp-pyright)
   (add-hook 'python-mode-hook #'(lambda ()
-				    (require 'lsp-pyright)
-				    ))
+				  (require 'lsp-pyright)
+				  ))
   (add-hook 'python-mode-hook #'lsp-deferred)
   (add-hook 'rust-mode-hook #'lsp-deferred)
   )

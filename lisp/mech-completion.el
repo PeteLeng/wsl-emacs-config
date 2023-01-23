@@ -1,5 +1,8 @@
 ;; Configuration
 (defvar completion-framework "company")
+(when (equal system-type 'gnu/linux)
+    ;; Toggle completion framework on linux
+    (setq completion-framework nil))
 
 ;; Orderless
 (straight-use-package 'orderless)
@@ -74,23 +77,6 @@
 
 (advice-add 'sh--cmd-completion-table-gen :around #'sh-completion-table-exclude-path)
 
-;; Lsp-bridge (aims to be the fastest lsp client out there)
-;; Dependencies
-(straight-use-package 'posframe)
-(straight-use-package '(markdown-mode :type git :host github :repo "jrblevin/markdown-mode"))
 
-(when (equal completion-framework "bridge")
-  (cond
-   ((equal system-type 'gnu/linux)
-    (straight-use-package `(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
-				       :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive))))
-     
-   ;; Wierd bugs on windows that cannot create symlink for .dz files
-   ((equal system-type 'windows-nt)
-    (straight-use-package `(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
-				     :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive)))))
-  (require 'lsp-bridge)
-  (global-lsp-bridge-mode)
-  )
 
 ;;; mech-completion.el ends here

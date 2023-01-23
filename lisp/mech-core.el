@@ -9,7 +9,7 @@
 ;; - performance
 ;;   - gc
 
-(defvar debug t)
+(defvar debug nil)
 
 (defun mech-core-keybindings ()
   ;; windows-key to super-key on Windows
