@@ -103,31 +103,4 @@
 (define-key global-map (kbd "C-c c") 'org-capture)
 ;; (define-key global-map (kbd "") 'org-insert-todo-heading)
 
-;; Note Management
-(straight-use-package 'org-roam)
-(defvar org-roam-directory nil)
-(setq org-roam-directory (file-truename "~/org/vault"))
-(with-eval-after-load 'org-roam
-  ;; (setq org-roam-node-display-template
-  ;; 	(concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-  (org-roam-db-autosync-mode)
-  )
-
-(unless (fboundp 'org-roam-node-find)
-  (autoload #'org-roam-node-find "org-roam" nil t))
-(unless (fboundp 'org-roam-node-insert)
-  (autoload #'org-roam-node-insert "org-roam" nil t))
-(unless (fboundp 'org-roam-node-random)
-  (autoload #'org-roam-node-random "org-roam" nil t))
-
-(define-key global-map (kbd "C-c n f") 'org-roam-node-find)
-(define-key global-map (kbd "C-c n i") 'org-roam-node-insert)
-(define-key global-map (kbd "C-c n r") 'org-roam-node-random)
-
-(with-eval-after-load 'org-roam
-  (define-key org-roam-mode-map (kbd "C-c n k") 'org-id-get-create)
-  (define-key org-roam-mode-map (kbd "C-c n t") 'org-roam-tag-add)
-  (define-key org-roam-mode-map (kbd "C-c n a") 'org-roam-alias-add)
-  (define-key org-roam-mode-map (kbd "C-c n b") 'org-roam-buffer-toggle)
-  )
-
+;;; mech-org.el ends here.

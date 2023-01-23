@@ -41,6 +41,7 @@
 
 ;; Org, Org-roam
 (load "mech-org")
+(load "mech-roam")
 
 ;; Utilities
 (load "mech-util")

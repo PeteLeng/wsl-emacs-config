@@ -18,8 +18,11 @@
   (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete)
   )
 
+(add-hook 'pdf-view-mode-hook #'pdf-tools-enable-minor-modes)
 (defun mech-pdfview-mode-hook ()
-  (display-line-numbers-mode -1))
+  (display-line-numbers-mode -1)
+  ;; (yas-minor-mode -1)
+  )
 (add-hook 'pdf-view-mode-hook #'mech-pdfview-mode-hook)
 
 ;; EPUB

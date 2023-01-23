@@ -81,10 +81,11 @@
   ;; Font
   ;; (custom-set-faces
   ;;  `(default
-  ;;     ((t (:family "CaskaydiaCove Nerd Font"))))
+  ;;     ((t (:family "Cascadia Code" :height 180))))
   ;;  `(fixed-pitch
-  ;;    ((t (:family "JetBrains Mono")))))
-  (add-to-list 'default-frame-alist '(font . "Fira Code-12"))
+  ;;    ((t (:family "JetBrains Mono"))))
+  ;;  )
+  (add-to-list 'default-frame-alist '(font . "Fira Code"))
 
   ;; Editing
   (electric-pair-mode)
@@ -121,6 +122,8 @@
   ;; Other
   (setq use-package-expand-minimally t)
   (setq debug-on-error debug) ;; set to t for debugging
+  ;; (setq visible-bell t)
+  (setq ring-bell-function 'ignore)
   )
 
 (provide 'mech-core)

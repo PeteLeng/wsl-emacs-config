@@ -45,6 +45,8 @@
 (autoload 'rust-mode "rust-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
 
+;; Bash
+
 ;; JS
 
 ;; Lsp-Bridge (aims to be the fastest lsp client out there)
@@ -64,6 +66,16 @@
 				     :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive)))))
   (require 'lsp-bridge)
   (global-lsp-bridge-mode)
+  ;; (setq lsp-bridge-enable-log t)
+
+  ;; lsp-bridge and pdf-view-mode somehow does not play nice together.
+  ;; Turning on and off lsp-bridge mode munally in pdf buffer solves the problem.
+  ;; Use hook to avoid turning on lsp-bridge mode in pdf-view-mode, did not work.
+
+  ;; Update: the issue is not pdf-view-mode, it's pdf file.
+  ;; Opening a pdf file while connecting to the pyright server has the same issue without turing on pdf-view-mode
+  ;; See temporary fix: [[id:c5e31f43-4947-4866-8531-817637e1dff0][lsp-bridge pdf bug report]]
+  
   )
 
 
@@ -104,6 +116,7 @@
 				  ))
   (add-hook 'python-mode-hook #'lsp-deferred)
   (add-hook 'rust-mode-hook #'lsp-deferred)
+  (add-hook 'sh-mode-hook #'lsp-deferred)
   )
 
 ;; mech-programming.el ends here.
