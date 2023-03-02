@@ -91,7 +91,7 @@
 	(add-to-list 'default-frame-alist '(font . "Cascadia Code")))
     (progn
       (message "Monitor off")
-      (add-to-list 'default-frame-alist '(font . "Cascadia Code-14"))))
+      (add-to-list 'default-frame-alist '(font . "Cascadia Code-18"))))
 
   ;; Editing
   (electric-pair-mode)

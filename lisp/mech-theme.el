@@ -26,6 +26,30 @@
   (enable-theme 'gruvbox-dark-hard)
   )
 
+;; NANO
+(when (equal mech-theme 'nano)
+  (straight-use-package '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
+  ;; (require 'nano)
+  (require 'nano-base-colors)
+  (require 'nano-faces)
+  (require 'nano-theme)
+  (require 'nano-theme-dark)
+  (nano-theme-set-dark)
+  (nano-refresh-theme)
+  )
+
+;; Lambda
+(when (equal mech-theme 'lambda)
+  (straight-use-package '(lamda-themes :type git :host github :repo "lambda-emacs/lambda-themes"))
+  (require 'lambda-themes)
+  (setq
+   lambda-themes-set-italic-comments t
+   lambda-themes-set-italic-keywords t
+   lambda-themes-set-variable-pitch t
+   )
+  (load-theme 'lambda-dark)
+  )
+
 ;; Customization
 ;; (deftheme mechanicus "I love to sail forbidden seas.")
 
@@ -38,8 +62,8 @@
 ;; (custom-set-faces
 ;;    '(default ((t (:foreground "#e1d7bd")))))
 
-(defun endswith1 (s)
-  (booleanp (compare-strings "1" nil nil s -1 nil))
+(defun endswithn (n s)
+  (booleanp (compare-strings n nil nil s -1 nil))
   )
 
 (defun mech-theme ()
@@ -52,9 +76,12 @@
 	  (face-attribute 'default :background))
 	 ;; (header-color "#ffdead")
 	 (header-color
-	  (face-attribute 'org-level-2 :foreground))
-	 (header-height 1.1)
-	 (link-fg-color "#8751be")
+	  (face-attribute 'org-level-1 :foreground))
+	 (header-height-l1 1.1)
+	 (header-height-l2 1.05)
+	 (header-height-l3 1.05)
+	 ;; (link-fg-color "#8751be")
+	 (link-fg-color "#7851a9")
 	 (inline-code-fg-color "#c2261f")
 	 ;; gtk colors are less contrasting
 	 (inline-code-bg-color
@@ -67,11 +94,15 @@
 	   ((equal system-type 'gnu/linux) (color-darken-name default-bg-color 30))))
 	 )
     (custom-set-faces
-     `(org-level-1 ((t :height ,header-height))))
+     `(org-level-1 ((t (:height ,header-height-l1))))
+     `(org-level-2 ((t (:foreground ,header-color :height ,header-height-l2))))
+     )
+    ;; Note that latter custom-set-faces with unspecified attributes will overide the previous custom-set-faces
     (dolist (header-face org-level-faces)
-      (unless (endswith1 (symbol-name header-face))
+      (unless (or (endswithn "1" (symbol-name header-face))
+		  (endswithn "2" (symbol-name header-face)))
        (custom-set-faces
-       `(,header-face ((t (:foreground ,header-color))))
+	`(,header-face ((t (:foreground ,header-color :height ,header-height-l3))))
        )))
     (custom-set-faces
      `(org-link ((t (:foreground ,link-fg-color :underline t))))
@@ -79,10 +110,12 @@
      `(org-block-begin-line ((t (:background ,code-block-bg-color :extend t))))
      `(org-block-end-line ((t (:background ,code-block-bg-color :extend t))))
      `(org-block ((t (:background ,code-block-bg-color))))
-     `(org-document-title ((t (:height ,header-height :weight bold :underline t))))
+     `(org-document-title ((t (:height 1.2 :weight bold :underline t))))
      )
     )
   )
 
-(add-hook 'org-mode-hook #'mech-theme)
+(when (equal mech-theme 'box)
+  (add-hook 'org-mode-hook #'mech-theme)
+  )
 

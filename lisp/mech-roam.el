@@ -19,11 +19,11 @@
 (with-eval-after-load 'org-roam
   (org-roam-db-autosync-mode)
   
-  ;; Roam Keybindings
-  (define-key org-roam-mode-map (kbd "C-c n k") 'org-id-get-create)
-  (define-key org-roam-mode-map (kbd "C-c n t") 'org-roam-tag-add)
-  (define-key org-roam-mode-map (kbd "C-c n a") 'org-roam-alias-add)
-  (define-key org-roam-mode-map (kbd "C-c n b") 'org-roam-buffer-toggle)
+  ;; Roam Keybindings, bind to org mode instead of org-roam-mode
+  (define-key org-mode-map (kbd "C-c n k") 'org-id-get-create)
+  (define-key org-mode-map (kbd "C-c n t") 'org-roam-tag-add)
+  (define-key org-mode-map (kbd "C-c n a") 'org-roam-alias-add)
+  (define-key org-mode-map (kbd "C-c n b") 'org-roam-buffer-toggle)
 
   (cl-defmethod org-roam-node-dir-name ((node org-roam-node))
     (let* ((dir
@@ -48,7 +48,11 @@
 
   ;; Subdirectories
   (defvar roam-templates
-    '(("p" "projects" plain
+    '(("d" "default" plain "%?"
+       :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+		  "#+title: ${title}\n#+options: toc:nil ^:nil \\n:t\n")
+       :unnarrowed t)
+      ("p" "projects" plain
        nil
        :target (file+head "projs/%<%Y%m%d%H%M%S>-${slug}.org"
 			  ":PROPERTIES:\n:DATE_CREATED: %U\n:END:\n#+title: ${title}")
@@ -69,8 +73,8 @@
        :unnarrowed t)))
   ;; (dolist (tmpl templates)
   ;;   (push tmpl org-roam-capture-templates))
-  (setq org-roam-capture-templates (nconc org-roam-capture-templates roam-templates))
-  
+  ;; (setq org-roam-capture-templates (nconc org-roam-capture-templates roam-templates))
+  (setq org-roam-capture-templates roam-templates)
   )
 
 ;;; mech-roam ends here.

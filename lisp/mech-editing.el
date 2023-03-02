@@ -8,7 +8,7 @@
   ;; Source: https://oremacs.com/2015/02/27/ace-window-leading-char/
   (custom-set-faces
    '(aw-leading-char-face
-     ((t (:inherit ace-jump-face-foreground :height 1.0))))))
+     ((t (:inherit ace-jump-face-foreground :height 1.1))))))
 (unless (fboundp 'ace-window)
   (autoload #'ace-window "ace-window" nil t))
 (global-set-key (kbd "M-o") 'ace-window)
@@ -48,3 +48,9 @@
   (define-key hs-minor-mode-map (kbd "C-c h H") 'hs-hide-all)
   (define-key hs-minor-mode-map (kbd "C-c h S") 'hs-show-all))
 
+;; God mode
+;; (straight-use-package 'god-mode)
+;; (require 'god-mode)
+;; (god-mode)
+;; (global-set-key (kbd "<escape>") #'god-local-mode)
+;; (define-key god-local-mode-map (kbd ".") #'repeat)

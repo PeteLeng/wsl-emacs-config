@@ -14,8 +14,13 @@
   (setq pdf-view-resize-factor 1.1)
   ;; Shorter keybindings
   (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
+  (define-key pdf-view-mode-map (kbd "u") 'pdf-annot-add-underline-markup-annotation)
   (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
   (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete)
+  ;; Integration with God mode, which adds Ctrl modifier by default.
+  ;; (define-key pdf-view-mode-map (kbd "C-SPC") 'pdf-view-scroll-up-or-next-page)
+  ;; (define-key pdf-view-mode-map (kbd "C-j") 'pdf-view-next-page-command)
+  ;; (define-key pdf-view-mode-map (kbd "C-k") 'pdf-view-previous-page-command)
   )
 
 (add-hook 'pdf-view-mode-hook #'pdf-tools-enable-minor-modes)

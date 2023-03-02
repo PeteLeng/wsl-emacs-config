@@ -14,6 +14,8 @@
 (straight-use-package 'vertico)
 (require 'vertico)
 (vertico-mode)
+(setq vertico-count 7)
+(setq vertico-resize nil)
 
 ;; Company
 (when (equal completion-framework "company")
@@ -31,11 +33,17 @@
    )
   ;; Source: https://stackoverflow.com/a/11573802/17006775
   ;; (setq company-backends (remove 'company-clang company-backends))
+  (setq company-dabbrev-other-buffers t)
   ;; Make dabbrev ignore pdf buffers
   (setq company-dabbrev-ignore-buffers ".*\\.pdf")
   (setq company-global-modes '(not shell-mode eshell-mode))
   (delete 'company-clang company-backends)
   (global-company-mode)
+
+  ;; Company box
+  (straight-use-package 'company-box)
+  (setq company-box-doc-enable nil)
+  (add-hook 'company-mode-hook #'company-box-mode)
   )
 
 ;; corfu

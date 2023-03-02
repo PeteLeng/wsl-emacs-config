@@ -57,7 +57,7 @@
 	   ("=>" . "⇒")
 	   ("<=" . "≤")
 	   (">=" . "≥")
-           ("!=" . "?"))
+           ("!=" . "≠"))
 	 ))
     (dolist (symbol symbols)
       (push symbol prettify-symbols-alist)))
@@ -65,7 +65,8 @@
   )
 
 (add-hook 'org-mode-hook #'org-indent-mode)
-(add-hook 'org-mode-hook #'mech-org-prettify-symbols) 
+(add-hook 'org-mode-hook #'mech-org-prettify-symbols)
+(add-hook 'org-mode-hook #'visual-line-mode)
 
 ;; Show hidden markers when editing
 (straight-use-package 'org-appear)
@@ -115,6 +116,9 @@
     "Org Web link")
   (org-link-set-parameters "http" :face 'org-web-link)
   (org-link-set-parameters "https" :face 'org-web-link)
+
+  ;; Set latex scale
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
   )
 
 ;;; mech-org.el ends here.

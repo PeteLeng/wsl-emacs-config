@@ -3,6 +3,8 @@
 (unless completion-framework
   (setq lang-server-framework "bridge"))
 
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+
 ;; flycheck
 (straight-use-package 'flycheck)
 ;; (add-hook 'prog-mode-hook #'flycheck-mode)
@@ -18,9 +20,18 @@
 ;; tree-sitter
 
 ;; copilot
+(straight-use-package `(copilot :type git :host github :repo "zerolfx/copilot.el"
+				:files ,(append '("dist") straight-default-files-directive)))
+(with-eval-after-load 'company
+  ;; disable inline previews, only one completion candidate
+  (delq 'company-preview-if-just-one-frontend company-frontends))
+(require 'copilot)
+(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
 
 ;; python
 (straight-use-package 'pyvenv)
+(add-hook 'python-mode-hook #'pyvenv-mode)
 
 (defun mech-python-mode-hook ()
   ;; Rebind key
@@ -90,6 +101,13 @@
      ;; lsp-log-io t ;; For debugging only, big performance hit
      lsp-signature-render-documentation nil
      )
+    
+    ;; Remote client for Rust
+    (lsp-register-client
+     (make-lsp-client :new-connection (lsp-tramp-connection "~/.local/bin/rust-analyzer")
+                      :major-modes '(rust-mode)
+                      :remote? t
+                      :server-id 'rust-analyzer-remote))
     )
 
   (defun mech-lsp-mode-hook ()
@@ -121,6 +139,11 @@
   (add-hook 'python-mode-hook #'lsp-deferred)
   (add-hook 'rust-mode-hook #'lsp-deferred)
   (add-hook 'sh-mode-hook #'lsp-deferred)
+
+  ;; C sharp
+  (setq lsp-csharp-server-path "~/.local/omnisharp-roslyn/OmniSharp")
+  (add-hook 'csharp-mode-hook #'lsp-deferred)
+  
   )
 
 ;; mech-programming.el ends here.
