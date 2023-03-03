@@ -1,3 +1,9 @@
+;; Navigation and editing
+;; Set zap-up-to-char as default
+(global-set-key (kbd "M-z") 'zap-up-to-char)
+;; repeat the most recent command
+(global-set-key (kbd "C-.") 'repeat)
+
 ;; Buffer Management
 (straight-use-package 'ace-window)
 ;; (require 'ace-window)
@@ -30,7 +36,7 @@
 ;; Spell Check
 (add-hook 'text-mode-hook #'flyspell-mode)
 (with-eval-after-load "flyspell"
-  (global-set-key (kbd "M-\\") 'ispell-word)
+  (global-set-key (kbd "M-/") 'ispell-word)
   ;; (define-key flyspell-mode-map (kbd "C-~") (keymap-lookup flyspell-mode-map "C-;"))
   ;; (define-key flyspell-mode-map (kbd "C-;") nil)
   )
@@ -49,8 +55,38 @@
   (define-key hs-minor-mode-map (kbd "C-c h S") 'hs-show-all))
 
 ;; God mode
-;; (straight-use-package 'god-mode)
-;; (require 'god-mode)
-;; (god-mode)
-;; (global-set-key (kbd "<escape>") #'god-local-mode)
-;; (define-key god-local-mode-map (kbd ".") #'repeat)
+(straight-use-package 'god-mode)
+(setq god-exempt-major-modes nil)
+(setq god-exempt-predicates nil)
+(require 'god-mode)
+(global-set-key (kbd "<escape>") #'god-mode-all)
+(define-key god-local-mode-map (kbd ".") #'repeat)
+;; god mode cursor
+(defun god-mode-update-cursor ()
+  (setq cursor-type (if (or god-local-mode buffer-read-only) 'hollow 'hbar)))
+(add-hook 'god-mode-enabled-hook #'god-mode-update-cursor)
+(add-hook 'god-mode-disabled-hook #'god-mode-update-cursor)
+
+;; Holy motion
+(unless (fboundp 'holymotion-make-motion)
+  (autoload #'holymotion-make-motion "holymotion" nil t))
+(straight-use-package
+ '(holymotion :type git :host github :repo "Overdr0ne/holymotion" :branch "main"))
+;; (require 'holymotion)
+(holymotion-make-motion
+ holymotion-forward-sexp #'forward-sexp)
+(holymotion-make-motion
+ holymotion-backward-sexp #'backward-sexp)
+
+(with-eval-after-load 'holymotion
+  ;; C-j originally bind to electric-newline-and-maybe-indent
+  (define-key global-map (kbd "C-j") holymotion-map)
+  (define-key holymotion-map (kbd "n") 'holymotion-next-line)
+  (define-key holymotion-map (kbd "p") 'holymotion-previous-line)
+  (define-key holymotion-map (kbd "e") 'holymotion-forward-to-word)
+  (define-key holymotion-map (kbd "a") 'holymotion-backward-to-word)
+  (define-key holymotion-map (kbd "f") 'holymotion-forward-sentence)
+  (define-key holymotion-map (kbd "b") 'holymotion-backward-sentence)
+  (define-key holymotion-map (kbd "F") 'holymotion-forward-sexp)
+  (define-key holymotion-map (kbd "B") 'holymotion-backward-sexp)
+  )

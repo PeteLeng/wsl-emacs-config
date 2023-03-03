@@ -146,4 +146,8 @@
   
   )
 
+;; Autoformatting
+(straight-use-package 'apheleia)
+(apheleia-global-mode +1)
+
 ;; mech-programming.el ends here.

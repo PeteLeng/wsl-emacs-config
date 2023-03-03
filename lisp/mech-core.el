@@ -23,8 +23,8 @@
   ;; Navigation
   (global-set-key (kbd "M-p") 'backward-sentence)
   (global-set-key (kbd "M-n") 'forward-sentence)
-  (global-set-key (kbd "M-a") 'backward-sexp)
-  (global-set-key (kbd "M-e") 'forward-sexp)
+  ;; (global-set-key (kbd "M-a") 'backward-sexp)
+  ;; (global-set-key (kbd "M-e") 'forward-sexp)
   (global-set-key (kbd "C-<") 'backward-paragraph)
   (global-set-key (kbd "C->") 'forward-paragraph)
   (if (equal system-type 'windows-nt)
@@ -45,7 +45,7 @@
   (global-set-key (kbd "C-c v") 'visible-mode)
 
   ;; Imenu
-  (global-set-key (kbd "C-c m") 'imenu)
+  ;; (global-set-key (kbd "C-c m") 'imenu)
   )
 
 (defun mech-core-ui ()
@@ -53,6 +53,7 @@
   (tool-bar-mode 0)
   (menu-bar-mode 0)
   (set-scroll-bar-mode nil)
+  (setq-default cursor-type 'hbar)
   )
 
 (defun mech-core ()
