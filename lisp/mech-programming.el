@@ -49,7 +49,18 @@
 ;; C/CPP
 (with-eval-after-load "cc-mode"
   (c-set-offset 'case-label '+)
+  (when (boundp 'c-mode-map)
+    (define-key c-mode-map (kbd "M-n") #'forward-sentence)
+    (define-key c-mode-map (kbd "M-p") #'backward-sentence)
+    )
+  (when (boundp 'c++-mode-map)
+    (define-key c++-mode-map  (kbd "M-n") #'forward-sentence)
+    (define-key c++-mode-map (kbd "M-p") #'backward-sentence)
+    )
   )
+
+;; CUDA
+(add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))
 
 ;; Rust
 (straight-use-package 'rust-mode)
@@ -88,7 +99,6 @@
   ;; See temporary fix: [[id:c5e31f43-4947-4866-8531-817637e1dff0][lsp-bridge pdf bug report]]
   
   )
-
 
 ;; LSP
 (when (equal lang-server-framework "lsp-mode")
@@ -140,6 +150,10 @@
   (add-hook 'rust-mode-hook #'lsp-deferred)
   (add-hook 'sh-mode-hook #'lsp-deferred)
 
+  ;; clangd
+  (setq lsp-clients-clangd-library-directories '("/usr" "/usr/include/c++/11"))
+  (add-hook 'c++-mode-hook #'lsp-deferred)
+    
   ;; C sharp
   (setq lsp-csharp-server-path "~/.local/omnisharp-roslyn/OmniSharp")
   (add-hook 'csharp-mode-hook #'lsp-deferred)

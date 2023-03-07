@@ -59,11 +59,13 @@
 (setq god-exempt-major-modes nil)
 (setq god-exempt-predicates nil)
 (require 'god-mode)
-(global-set-key (kbd "<escape>") #'god-mode-all)
+(global-set-key (kbd "M-1") #'god-mode-all)
 (define-key god-local-mode-map (kbd ".") #'repeat)
 ;; god mode cursor
 (defun god-mode-update-cursor ()
-  (setq cursor-type (if (or god-local-mode buffer-read-only) 'hollow 'hbar)))
+  (setq cursor-type (cond (god-local-mode 'hollow)
+			  (buffer-read-only 'box)
+			  (t 'hbar))))
 (add-hook 'god-mode-enabled-hook #'god-mode-update-cursor)
 (add-hook 'god-mode-disabled-hook #'god-mode-update-cursor)
 
