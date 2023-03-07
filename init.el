@@ -4,6 +4,8 @@
 
 ;; package management, straight
 ;; (require 'use-package-core) ;; https://github.com/radian-software/straight.el/issues/1035
+(defvar native-comp-deferred-compilation-deny-list nil) ;; https://www.reddit.com/r/emacs/comments/nyis3p/problem_running_native_comp/
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
