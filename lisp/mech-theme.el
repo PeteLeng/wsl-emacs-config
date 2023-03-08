@@ -59,8 +59,27 @@
 ;;  '(header-height 1.2)
 ;;  )
 
-;; (custom-set-faces
-;;    '(default ((t (:foreground "#e1d7bd")))))
+(unless (fboundp 'color-darken-name)
+    (autoload #'color-darken-name 'color nil nil))
+
+(defun mech-darken-worker ()
+  (let ((bg (face-attribute 'default :background)))
+    (message (format "orig bg: %s\n" bg))
+    (setq bg (color-darken-name bg 40))
+    (message (format "new bg: %s\n" bg))
+    (custom-set-faces
+     `(default ((t (:background ,bg)))))))
+
+(defun mech-darken (&optional frame)
+  (if frame
+      (with-selected-frame frame (mech-darken-worker))
+    (mech-darken-worker))
+  (remove-hook 'after-make-frame-functions #'mech-darken))
+
+(if (daemonp)
+    (add-hook 'after-make-frame-functions #'mech-darken)
+  (mech-darken))
+
 
 (defun endswithn (n s)
   (booleanp (compare-strings n nil nil s -1 nil))

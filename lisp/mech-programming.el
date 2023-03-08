@@ -29,7 +29,7 @@
 (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
 (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
 
-;; python
+;; Python
 (straight-use-package 'pyvenv)
 (add-hook 'python-mode-hook #'pyvenv-mode)
 
@@ -149,12 +149,7 @@
   (add-hook 'python-mode-hook #'lsp-deferred)
   (add-hook 'rust-mode-hook #'lsp-deferred)
   (add-hook 'sh-mode-hook #'lsp-deferred)
-
-  ;; clangd
-  (setq lsp-clients-clangd-library-directories '("/usr" "/usr/include/c++/11"))
   (add-hook 'c++-mode-hook #'lsp-deferred)
-    
-  ;; C sharp
   (setq lsp-csharp-server-path "~/.local/omnisharp-roslyn/OmniSharp")
   (add-hook 'csharp-mode-hook #'lsp-deferred)
   

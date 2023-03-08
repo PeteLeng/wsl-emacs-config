@@ -1,4 +1,15 @@
 ;; PDF
+(defun straight-files-exl-gignore ()
+  (let ((files '()))
+    (dolist (p straight-default-files-directive)
+      (if (stringp p)
+	  (add-to-list 'files p t)
+	(let ((exl p))
+	  (setq exl (add-to-list 'p ".gitignore" t))
+	  (add-to-list 'files exl t))))
+    files))
+
+;; (straight-use-package `(pdf-tools :type git :host github :repo "vedang/pdf-tools"))
 (straight-use-package 'pdf-tools)
 (add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
 (unless (fboundp 'pdf-view-mode)

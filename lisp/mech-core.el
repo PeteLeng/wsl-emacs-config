@@ -17,8 +17,7 @@
       ;; or (equal system-type 'windows-nt)
       (progn
 	(setq w32-lwindow-modifier 'super)
-	(w32-register-hot-key [s-]))
-    )
+	(w32-register-hot-key [s-])))
 
   ;; Navigation
   (global-set-key (kbd "M-p") 'backward-sentence)
@@ -86,6 +85,7 @@
   ;;  `(fixed-pitch
   ;;    ((t (:family "JetBrains Mono"))))
   ;;  )
+  (add-to-list 'default-frame-alist '(alpha-background . 90))
   (if (string-equal (getenv "MONITOR") "on")
       (progn
 	(message "Monitor on")
