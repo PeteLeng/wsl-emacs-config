@@ -43,21 +43,20 @@
     (define-key python-mode-map (kbd "C-<") #'python-nav-backward-block)
     (define-key python-mode-map (kbd "C->") #'python-nav-forward-block))
   )
-
 (add-hook 'python-mode-hook #'mech-python-mode-hook)
 
 ;; C/CPP
-(with-eval-after-load "cc-mode"
-  (c-set-offset 'case-label '+)
-  (when (boundp 'c-mode-map)
-    (define-key c-mode-map (kbd "M-n") #'forward-sentence)
-    (define-key c-mode-map (kbd "M-p") #'backward-sentence)
-    )
-  (when (boundp 'c++-mode-map)
-    (define-key c++-mode-map  (kbd "M-n") #'forward-sentence)
-    (define-key c++-mode-map (kbd "M-p") #'backward-sentence)
-    )
-  )
+;; (with-eval-after-load "cc-mode"
+;;   (c-set-offset 'case-label '+)
+;;   (when (boundp 'c-mode-map)
+;;     (define-key c-mode-map (kbd "M-n") #'forward-sentence)
+;;     (define-key c-mode-map (kbd "M-p") #'backward-sentence)
+;;     )
+;;   (when (boundp 'c++-mode-map)
+;;     (define-key c++-mode-map  (kbd "M-n") #'forward-sentence)
+;;     (define-key c++-mode-map (kbd "M-p") #'backward-sentence)
+;;     )
+;;   )
 
 ;; CUDA
 (add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))

@@ -29,11 +29,11 @@
     (let* ((dir
 	    ;; returns the directory name that ends with "/"
 	    (file-name-directory (org-roam-node-file node)))
-	   (rel-dir
+	   (relative-dir
 	    (file-relative-name dir org-roam-directory))
 	   )
-      (unless (string-equal "./" rel-dir)
-	(concat "#/" rel-dir " "))))
+      (unless (string-equal "./" relative-dir)
+	(concat "- " relative-dir " "))))
     
   (setq org-roam-node-display-template
 	(concat "${title:60} "
@@ -52,14 +52,14 @@
        :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
 		  "#+title: ${title}\n#+options: toc:nil ^:nil \\n:t\n")
        :unnarrowed t)
+      ("a" "archives" plain
+       nil
+       :target (file+head "archs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
+       :unnarrowed t)
       ("p" "projects" plain
        nil
        :target (file+head "projs/%<%Y%m%d%H%M%S>-${slug}.org"
 			  ":PROPERTIES:\n:DATE_CREATED: %U\n:END:\n#+title: ${title}")
-       :unnarrowed t)
-      ("a" "archives" plain
-       nil
-       :target (file+head "archs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
        :unnarrowed t)
       ("c" "Courses")
       ("ca" "assignments" plain

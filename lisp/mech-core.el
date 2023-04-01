@@ -9,7 +9,7 @@
 ;; - performance
 ;;   - gc
 
-(defvar debug t)
+(defvar debug nil)
 
 (defun mech-core-keybindings ()
   ;; windows-key to super-key on Windows
@@ -29,22 +29,27 @@
   (if (equal system-type 'windows-nt)
       (progn
 	(global-set-key (kbd "s-p") 'previous-buffer)
-	(global-set-key (kbd "s-n") 'next-buffer))
-    )
+	(global-set-key (kbd "s-n") 'next-buffer)))
 
   ;; Editing
   (global-set-key (kbd "C-;") 'comment-line)	;; Comment
   (global-set-key (kbd "C-z") 'undo)		;; Undo
   (global-set-key (kbd "M-#") 'mark-sexp)	;; Mark symbolic expression
-  (global-set-key (kbd "M-s s") 'isearch-forward-thing-at-point)
-  ;; (global-set-key (kbd "C-g") 'abort-recursive-edit) ;;  Need C-g twice to abort.
-  ;; Possible related to gnome bug: https://www.reddit.com/r/emacs/comments/bnly4o/unable_to_exit_minibuffer_with_just_cg/
 
-  ;; Visible mode, show marker texts when org-hide-emphasis-markers is t
-  (global-set-key (kbd "C-c v") 'visible-mode)
+  ;; Isearch, see more using "M-s C-h"
 
   ;; Imenu
-  ;; (global-set-key (kbd "C-c m") 'imenu)
+  (global-set-key (kbd "C-c m") 'imenu)
+
+  ;; Ibuffer
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+  ;; Emacs PGTK build bug, missing C-g keystrokes
+  ;; Possible related to gnome bug: https://www.reddit.com/r/emacs/comments/bnly4o/unable_to_exit_minibuffer_with_just_cg/
+  ;; (global-set-key (kbd "C-g") 'abort-recursive-edit)
+
+  ;; Visible mode, show marker texts when org-hide-emphasis-markers is t
+  ;; (global-set-key (kbd "C-c v") 'visible-mode)
   )
 
 (defun mech-core-ui ()
@@ -55,12 +60,18 @@
   (setq-default cursor-type 'hbar)
   )
 
+(defun mech-core-dired ()
+  (setq dired-create-destination-dirs t))
+
 (defun mech-core ()
   ;; Keybindings
   (mech-core-keybindings)
   
   ;; UI
   (mech-core-ui)
+
+  ;; Dired
+  (mech-core-dired)
 
   ;; Encoding
   ;; source: https://www.masteringemacs.org/article/working-coding-systems-unicode-emacs
@@ -69,30 +80,28 @@
   ;; Fontset
   ;; Replace default font with Symbola for symbol chars in default fontset
   ;; (list-character-sets 0) for the list of charsets
+  ;; (setq use-default-font-for-symbols nil)
   (set-fontset-font
    t
    'symbol
    (cond
-    ((equal system-type 'windows-nt) (cond ((member "MesloLGM Nerd Font Mono" (font-family-list)) "MesloLGM Nerd Font Mono")))
-    ((equal system-type 'gnu/linux) (cond ((member "Symbola" (font-family-list)) "Symbola")))
-    ))
-  
-
+    ((equal system-type 'windows-nt)
+     (cond ((member "MesloLGM Nerd Font Mono" (font-family-list)) "MesloLGM Nerd Font Mono")))
+    ((equal system-type 'gnu/linux)
+     (cond ((member "Symbola" (font-family-list)) "Symbola")
+	   ((member "Symbols Nerd Font Mono" (font-family-list)) "Symbols Nerd Font Mono"))))
+   )
+    
   ;; Font
-  ;; (custom-set-faces
-  ;;  `(default
-  ;;     ((t (:family "Cascadia Code" :height 180))))
-  ;;  `(fixed-pitch
-  ;;    ((t (:family "JetBrains Mono"))))
-  ;;  )
   (add-to-list 'default-frame-alist '(alpha-background . 90))
-  (if (string-equal (getenv "MONITOR") "on")
-      (progn
-	(message "Monitor on")
-	(add-to-list 'default-frame-alist '(font . "Cascadia Code")))
-    (progn
-      (message "Monitor off")
-      (add-to-list 'default-frame-alist '(font . "Cascadia Code-18"))))
+  (cond
+   ((string-equal (getenv "MON") "on")
+    (message "Monitor on")
+    (add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font-13")))
+   (t
+    (message "Monitor off")
+    (add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font Mono-18"))
+    ))
 
   ;; Editing
   (electric-pair-mode)
@@ -104,7 +113,7 @@
   (setq read-file-name-completion-ignore-case t
 	read-buffer-completion-ignore-case t
 	completion-ignore-case t)
-  (setq tab-always-indent ':complete)
+  (setq tab-always-indent 'complete)
 
   ;; Minibuffer
   ;; (setq minibuffer-prompt-properties

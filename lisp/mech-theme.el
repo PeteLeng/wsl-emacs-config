@@ -26,18 +26,6 @@
   (enable-theme 'gruvbox-dark-hard)
   )
 
-;; NANO
-(when (equal mech-theme 'nano)
-  (straight-use-package '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
-  ;; (require 'nano)
-  (require 'nano-base-colors)
-  (require 'nano-faces)
-  (require 'nano-theme)
-  (require 'nano-theme-dark)
-  (nano-theme-set-dark)
-  (nano-refresh-theme)
-  )
-
 ;; Lambda
 (when (equal mech-theme 'lambda)
   (straight-use-package '(lamda-themes :type git :host github :repo "lambda-emacs/lambda-themes"))
@@ -60,7 +48,7 @@
 ;;  )
 
 (unless (fboundp 'color-darken-name)
-    (autoload #'color-darken-name 'color nil nil))
+    (autoload #'color-darken-name "color" nil nil))
 
 (defun mech-darken-worker ()
   (let ((bg (face-attribute 'default :background)))
@@ -79,7 +67,6 @@
 (if (daemonp)
     (add-hook 'after-make-frame-functions #'mech-darken)
   (mech-darken))
-
 
 (defun endswithn (n s)
   (booleanp (compare-strings n nil nil s -1 nil))
@@ -137,4 +124,36 @@
 (when (equal mech-theme 'box)
   (add-hook 'org-mode-hook #'mech-theme)
   )
+
+;; Less clustered modeline
+;; http://emacs-fu.blogspot.com/2010/05/cleaning-up-mode-line.html
+(straight-use-package 'diminish)
+(require 'diminish)
+(with-eval-after-load 'eldoc
+  (diminish 'eldoc-mode ""))
+(with-eval-after-load 'yasnippet
+  (diminish 'yas-minor-mode ""))
+(with-eval-after-load 'company
+  (diminish 'company-mode ""))
+(with-eval-after-load 'projectile
+  (diminish 'projectile-mode " 📁"))
+(with-eval-after-load "hideshow"
+  (diminish 'hs-minor-mode " 📜"))
+(with-eval-after-load 'company-box
+  (diminish 'company-box-mode " 🤖"))
+(with-eval-after-load 'apheleia
+  (diminish 'apheleia-mode " 🏺"))
+(with-eval-after-load 'lsp
+  (diminish 'lsp-mode " 𝞢"))
+;; (with-eval-after-load 'flycheck
+;;   (diminish 'flycheck-mode " Δ"))
+(add-hook 'emacs-lisp-mode-hook
+	  (lambda()
+	    (setq mode-name "El")))
+(add-hook 'python-mode-hook
+	  (lambda()
+	    (setq mode-name "Py")))
+(add-hook 'pdf-view-mode-hook
+	  (lambda()
+	    (setq mode-name "PDF")))
 

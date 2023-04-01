@@ -1,4 +1,4 @@
-;; Navigation and editing
+ ;; Navigation and editing
 ;; Set zap-up-to-char as default
 (global-set-key (kbd "M-z") 'zap-up-to-char)
 ;; repeat the most recent command
@@ -32,14 +32,17 @@
 
 ;; Snippets
 (straight-use-package 'yasnippet-snippets)
+;; (require 'yasnippet-snippets)
 
 ;; Spell Check
 (add-hook 'text-mode-hook #'flyspell-mode)
-(with-eval-after-load "flyspell"
-  (global-set-key (kbd "M-/") 'ispell-word)
-  ;; (define-key flyspell-mode-map (kbd "C-~") (keymap-lookup flyspell-mode-map "C-;"))
-  ;; (define-key flyspell-mode-map (kbd "C-;") nil)
-  )
+(unless (fboundp 'ispell-word)
+  (autoload #'ispell-word "ispell" nil t))
+(global-set-key (kbd "M-/") 'ispell-word)
+;; (with-eval-after-load "flyspell"
+;;   (define-key flyspell-mode-map (kbd "C-~") (keymap-lookup flyspell-mode-map "C-;"))
+;;   (define-key flyspell-mode-map (kbd "C-;") nil)
+;;   )
 
 ;; Hide-show mode
 ;; Source: https://emacs.stackexchange.com/a/33686
@@ -59,7 +62,7 @@
 (setq god-exempt-major-modes nil)
 (setq god-exempt-predicates nil)
 (require 'god-mode)
-(global-set-key (kbd "M-1") #'god-mode-all)
+(global-set-key (kbd "M-<f1>") #'god-mode-all)
 (define-key god-local-mode-map (kbd ".") #'repeat)
 ;; god mode cursor
 (defun god-mode-update-cursor ()
@@ -74,7 +77,6 @@
   (autoload #'holymotion-make-motion "holymotion" nil t))
 (straight-use-package
  '(holymotion :type git :host github :repo "Overdr0ne/holymotion" :branch "main"))
-;; (require 'holymotion)
 (holymotion-make-motion
  holymotion-forward-sexp #'forward-sexp)
 (holymotion-make-motion
@@ -82,7 +84,8 @@
 
 (with-eval-after-load 'holymotion
   ;; C-j originally bind to electric-newline-and-maybe-indent
-  (define-key global-map (kbd "C-j") holymotion-map)
+  (define-key global-map (kbd "M-m") holymotion-map)
+  (define-key holymotion-map (kbd ".") #'back-to-indentation)
   (define-key holymotion-map (kbd "n") 'holymotion-next-line)
   (define-key holymotion-map (kbd "p") 'holymotion-previous-line)
   (define-key holymotion-map (kbd "e") 'holymotion-forward-to-word)
@@ -92,3 +95,37 @@
   (define-key holymotion-map (kbd "F") 'holymotion-forward-sexp)
   (define-key holymotion-map (kbd "B") 'holymotion-backward-sexp)
   )
+
+;; Definitely check out avy
+;; the interface is nicely intergarted with goto-keymap,
+;; and provides some interesting features
+;; https://github.com/abo-abo/avy
+(straight-use-package '(avy :type git :host github :repo "abo-abo/avy"))
+(defvar avy-map (make-sparse-keymap) "Avy motion")
+;; (global-set-key (kbd "C-j") avy-map) ;; set in navigator mode
+(keymap-set avy-map "j" #'avy-goto-word-1)
+(keymap-set avy-map "k" #'avy-goto-char)
+(keymap-set avy-map "l" #'avy-goto-line)
+
+;; input-decode-map not set properly in daemon mode.
+(defun mech-avy (&optional frame)
+  (with-selected-frame (or frame (selected-frame))
+    (progn
+      (define-key input-decode-map [?\C-m] [C-m]) 
+      (global-set-key (kbd "<C-m>") avy-map))
+    (message "new frame %S" (selected-frame))))
+
+;; (if (daemonp) (add-hook 'after-make-frame-functions #'mech-avy) (mech-avy))
+
+;; Navigator minor mode
+(defvar navigator-mode-map (make-sparse-keymap) "Navis Nobilite")
+;; (keymap-set navigator-mode-map "C-j" avy-map)
+(keymap-set navigator-mode-map "C-j j" #'avy-goto-word-1)
+(keymap-set navigator-mode-map "C-j k" #'avy-goto-char)
+(keymap-set navigator-mode-map "C-j l" #'avy-goto-line)
+(keymap-set navigator-mode-map "C-j ." #'org-noter-sync-current-page-or-chapter)
+(keymap-set navigator-mode-map "C-j n" #'org-noter-sync-next-page-or-chapter)
+(keymap-set navigator-mode-map "C-j p" #'org-noter-sync-prev-page-or-chapter)
+(define-minor-mode navigator-mode "Navis Nobilite" :global t :keymap navigator-mode-map)
+(navigator-mode 1)
+

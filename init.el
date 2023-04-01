@@ -4,7 +4,7 @@
 
 ;; package management, straight
 ;; (require 'use-package-core) ;; https://github.com/radian-software/straight.el/issues/1035
-(defvar native-comp-deferred-compilation-deny-list nil) ;; https://www.reddit.com/r/emacs/comments/nyis3p/problem_running_native_comp/
+(setq native-comp-deferred-compilation-deny-list nil) ;; https://www.reddit.com/r/emacs/comments/nyis3p/problem_running_native_comp/
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -19,12 +19,43 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; Buffer-selection, Expand-region, Template, Spell-check
-(load "mech-editing")
+;; fix unwanted warning in Projectile
+(defun straight-files-exl-gignore ()
+  (let ((files '()))
+    (dolist (p straight-default-files-directive)
+      (if (stringp p)
+	  (add-to-list 'files p t)
+	(let ((exl p))
+	  (setq exl (add-to-list 'p ".gitignore" t))
+	  (add-to-list 'files exl t))))
+    files))
+
+(defun mech-expand-files-log (fapp &rest args)
+  (let* ((res (apply fapp args)))
+    (message "Sym links:")
+    ;; (message "%s" res)
+    (dolist (edge res)
+      (let ((src (car edge))
+	    (dst (cdr edge)))
+	(message "%s -> %s" src dst)))
+    res))
+(advice-add 'straight-expand-files-directive :around #'mech-expand-files-log)
+(advice-remove 'straight-expand-files-directive #'mech-expand-files-log)
+
+(defun mech-symlink-advice (fapp &rest args)
+  (let ((src (nth 0 args))
+	(dst (nth 1 args)))
+    (if (string-equal (file-name-base src) ".gitignore")
+	(message "ignore .gitignore as symlink")
+      (apply fapp args))))
+(advice-add 'straight--symlink-recursively :around #'mech-symlink-advice)
 
 ;; Theme
 ;; lsp-bridge depends on correct theme colors
 (load "mech-theme")
+
+;; Buffer-selection, Expand-region, Template, Spell-check
+(load "mech-editing")
 
 ;; Vertico, Orderless, Company
 (load "mech-completion")
@@ -38,7 +69,6 @@
 ;; Programming
 ;; Flycheck, Tramp, LSP, Tree-sitter, Copilot,
 ;; C, Python, Rust,
-;; Leetcode, Exercism,
 (load "mech-programming")
 
 ;; Org, Org-roam
@@ -49,17 +79,4 @@
 (load "mech-util")
 
 ;; init.el ends here.
- 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+

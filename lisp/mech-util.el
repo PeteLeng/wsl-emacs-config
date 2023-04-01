@@ -71,3 +71,8 @@
 	(dolist (hl hls)
 	  (push (concat title "> " hl) headlines))))
     headlines))
+
+(defun mech-get-fonts (regex)
+  (dolist (f (font-family-list))
+    (when (string-match regex f)
+      (insert (format "%s\n" f)))))

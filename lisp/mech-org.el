@@ -81,12 +81,19 @@
 ;; Eye Candies
 (straight-use-package 'org-bullets)
 (with-eval-after-load 'org-bullets
-  ;; ◉ ● ○ •
-  (setq org-bullets-bullet-list '("◉" "•" "•" "•" "•" "•" "•" "•"))
+  ;; ◉ ● ○ • ∙
+  (setq org-bullets-bullet-list '("•" "•" "•" "•" "•" "•" "•" "•"))
   )
 (add-hook 'org-mode-hook #'org-bullets-mode)
 
 ;; Org links for pdf
+(setq org-noter-highlight-selected-text t)
+(straight-use-package '(org-noter :type git :host github :repo "org-noter/org-noter" :files ("*.el" "modules/*.el")))
+(with-eval-after-load 'org-noter
+  (keymap-unset org-noter-notes-mode-map "M-n")
+  (keymap-unset org-noter-notes-mode-map "M-p")
+  (keymap-unset org-noter-notes-mode-map "M-."))
+
 (straight-use-package 'org-pdftools)
 (add-hook 'org-mode-hook #'org-pdftools-setup-link)
 

@@ -57,18 +57,14 @@
    corfu-quit-no-match 'separator
    ))
 
-;; Completion on wsl emacs shell is simply too slow
-;; Had to turn off company completely, done through configuring company-global-modes
-;; A possible solution is to configure the backend to stop searching windows file path.
+;; Completion in shell-mode is too slow
+;; Update, configure wsl to not include host path.
 (defun mech-completion-shell-hook ()
-  ;; (setq-local completion-styles '(basic))
-  ;; (setq-local corfu-auto nil)
+  (setq-local completion-styles '(basic))
+  (setq-local corfu-auto nil)
   )
-(add-hook 'shell-mode-hook #'mech-completion-shell-hook)
-(add-hook 'eshell-mode-hook #'mech-completion-shell-hook)
-
-;; (dolist (path exec-path)
-;;   (insert (concat path "\n")))
+;; (add-hook 'shell-mode-hook #'mech-completion-shell-hook)
+;; (add-hook 'eshell-mode-hook #'mech-completion-shell-hook)
 
 (defun sh-completion-table-exclude-path (orig &rest args)
   (let ((exec-path exec-path))
@@ -84,7 +80,5 @@
   (autoload #'sh--cmd-completion-table-gen "sh-script" nil nil))
 
 (advice-add 'sh--cmd-completion-table-gen :around #'sh-completion-table-exclude-path)
-
-
 
 ;;; mech-completion.el ends here
