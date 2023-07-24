@@ -57,18 +57,18 @@
    corfu-quit-no-match 'separator
    ))
 
-;; Completion in shell-mode is too slow
-;; Update, configure wsl to not include host path.
+;; Completion in shell mode
 (defun mech-completion-shell-hook ()
   (setq-local completion-styles '(basic))
-  (setq-local corfu-auto nil)
   )
 ;; (add-hook 'shell-mode-hook #'mech-completion-shell-hook)
 ;; (add-hook 'eshell-mode-hook #'mech-completion-shell-hook)
 
+;; Shell-mode completion in WSL is too slow.
+;; Update, configure wsl to not include host path.
 (defun sh-completion-table-exclude-path (orig &rest args)
-  (let ((exec-path exec-path))
-    (dolist (path exec-path)
+  (let ((prev-exec-path exec-path))
+    (dolist (path prev-exec-path)
       (if (booleanp (compare-strings "/mnt/c" nil nil path nil 6))
           (setq exec-path (remove path exec-path))))
     ;; (dolist (path exec-path)

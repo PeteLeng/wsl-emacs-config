@@ -1,14 +1,9 @@
 (defvar mech-theme 'box)
 
-;; VS code theme
-;; (straight-use-package 'vscode-dark-plus-theme)
-;; (require 'vscode-dark-plus-theme)
-;; (load-theme 'vscode-dark-plus t)
-
 ;; Tomorrow theme
 (when (equal mech-theme 'tmr)
   ;; (straight-use-package '(tomorrow-theme :type git :host github :repo "ChrisKempson/Tomorrow-Theme"))
-  ;; (require 'color-theme-tomorrow)
+  ;; (require 'color-theme-tomorrow) 
   
   (straight-use-package 'color-theme-sanityinc-tomorrow)
   (require 'color-theme-sanityinc-tomorrow)
@@ -26,18 +21,6 @@
   (enable-theme 'gruvbox-dark-hard)
   )
 
-;; Lambda
-(when (equal mech-theme 'lambda)
-  (straight-use-package '(lamda-themes :type git :host github :repo "lambda-emacs/lambda-themes"))
-  (require 'lambda-themes)
-  (setq
-   lambda-themes-set-italic-comments t
-   lambda-themes-set-italic-keywords t
-   lambda-themes-set-variable-pitch t
-   )
-  (load-theme 'lambda-dark)
-  )
-
 ;; Customization
 ;; (deftheme mechanicus "I love to sail forbidden seas.")
 
@@ -47,32 +30,33 @@
 ;;  '(header-height 1.2)
 ;;  )
 
+;; Make sure color-darken-name is loaded
 (unless (fboundp 'color-darken-name)
     (autoload #'color-darken-name "color" nil nil))
 
-(defun mech-darken-worker ()
+(defun mech-darken-bg-impl ()
   (let ((bg (face-attribute 'default :background)))
-    (message (format "orig bg: %s\n" bg))
+    (message (format "old bg color: %s\n" bg))
     (setq bg (color-darken-name bg 40))
-    (message (format "new bg: %s\n" bg))
+    (message (format "new bg color: %s\n" bg))
     (custom-set-faces
      `(default ((t (:background ,bg)))))))
 
-(defun mech-darken (&optional frame)
+(defun mech-darken-bg (&optional frame)
   (if frame
-      (with-selected-frame frame (mech-darken-worker))
-    (mech-darken-worker))
-  (remove-hook 'after-make-frame-functions #'mech-darken))
+      (with-selected-frame frame (mech-darken-bg-impl))
+    (mech-darken-bg-impl))
+  (remove-hook 'after-make-frame-functions #'mech-darken-bg))
 
 (if (daemonp)
-    (add-hook 'after-make-frame-functions #'mech-darken)
-  (mech-darken))
+    (add-hook 'after-make-frame-functions #'mech-darken-bg)
+  (mech-darken-bg))
 
 (defun endswithn (n s)
   (booleanp (compare-strings n nil nil s -1 nil))
   )
 
-(defun mech-theme ()
+(defun mech-set-org-theme ()
   (require 'color)
   ;; Note let* form
   ;; https://www.gnu.org/software/emacs/manual/html_node/eintr/fwd_002dpara-let.html
@@ -121,9 +105,9 @@
     )
   )
 
-(when (equal mech-theme 'box)
-  (add-hook 'org-mode-hook #'mech-theme)
-  )
+;; (when (equal mech-theme 'box)
+;;   (add-hook 'org-mode-hook #'mech-set-org-theme)
+;;   )
 
 ;; Less clustered modeline
 ;; http://emacs-fu.blogspot.com/2010/05/cleaning-up-mode-line.html

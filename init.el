@@ -4,7 +4,7 @@
 
 ;; package management, straight
 ;; (require 'use-package-core) ;; https://github.com/radian-software/straight.el/issues/1035
-(setq native-comp-deferred-compilation-deny-list nil) ;; https://www.reddit.com/r/emacs/comments/nyis3p/problem_running_native_comp/
+;; (setq native-comp-deferred-compilation-deny-list nil) ;; https://www.reddit.com/r/emacs/comments/nyis3p/problem_running_native_comp/
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -39,8 +39,8 @@
 	    (dst (cdr edge)))
 	(message "%s -> %s" src dst)))
     res))
-(advice-add 'straight-expand-files-directive :around #'mech-expand-files-log)
-(advice-remove 'straight-expand-files-directive #'mech-expand-files-log)
+;; (advice-add 'straight-expand-files-directive :around #'mech-expand-files-log)
+;; (advice-remove 'straight-expand-files-directive #'mech-expand-files-log)
 
 (defun mech-symlink-advice (fapp &rest args)
   (let ((src (nth 0 args))

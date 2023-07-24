@@ -20,14 +20,16 @@
 ;; tree-sitter
 
 ;; copilot
-(straight-use-package `(copilot :type git :host github :repo "zerolfx/copilot.el"
-				:files ,(append '("dist") straight-default-files-directive)))
-(with-eval-after-load 'company
-  ;; disable inline previews, only one completion candidate
-  (delq 'company-preview-if-just-one-frontend company-frontends))
-(require 'copilot)
-(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+(straight-use-package
+ `(copilot :type git
+	   :host github
+	   :repo "zerolfx/copilot.el"
+	   :files ,(append '("dist") straight-default-files-directive)))
+;; (require 'copilot)
+;; (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+;; (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+;; (with-eval-after-load 'company
+;;   (delq 'company-preview-if-just-one-frontend company-frontends))
 
 ;; Python
 (straight-use-package 'pyvenv)
@@ -43,7 +45,7 @@
     (define-key python-mode-map (kbd "C-<") #'python-nav-backward-block)
     (define-key python-mode-map (kbd "C->") #'python-nav-forward-block))
   )
-(add-hook 'python-mode-hook #'mech-python-mode-hook)
+;; (add-hook 'python-mode-hook #'mech-python-mode-hook)
 
 ;; C/CPP
 ;; (with-eval-after-load "cc-mode"
@@ -78,13 +80,19 @@
 (when (equal lang-server-framework "bridge")
   (cond
    ((equal system-type 'gnu/linux)
-    (straight-use-package `(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
-				       :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive))))
-     
-   ;; Wierd bugs on windows that cannot create symlink for .dz files
+    (straight-use-package
+     `(lsp-bridge :type git
+		  :host github
+		  :repo "manateelazycat/lsp-bridge"
+		  :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive))))
+   
+   ;; Cannot create symlink for .dz files on Windows
    ((equal system-type 'windows-nt)
-    (straight-use-package `(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
-				     :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive)))))
+    (straight-use-package
+     `(lsp-bridge :type git
+		  :host github
+		  :repo "manateelazycat/lsp-bridge"
+		  :files ,(append '("*.py" "acm" "core" "langserver" "multiserver" "resources") straight-default-files-directive)))))
   (require 'lsp-bridge)
   (global-lsp-bridge-mode)
   ;; (setq lsp-bridge-enable-log t)
@@ -96,7 +104,6 @@
   ;; Update: the issue is not pdf-view-mode, it's pdf file.
   ;; Opening a pdf file while connecting to the pyright server has the same issue without turing on pdf-view-mode
   ;; See temporary fix: [[id:c5e31f43-4947-4866-8531-817637e1dff0][lsp-bridge pdf bug report]]
-  
   )
 
 ;; LSP
@@ -104,39 +111,17 @@
   (straight-use-package 'lsp-mode)
   (setq lsp-keymap-prefix "C-c l")
   (with-eval-after-load "lsp-mode"
-    ;; (define-key lsp-mode-map (kbd "M-p") nil)
-    ;; (define-key lsp-mode-map (kbd "M-n") nil)
     (setq
      ;; lsp-log-io t ;; For debugging only, big performance hit
-     lsp-signature-render-documentation nil
-     )
+     lsp-signature-render-documentation nil)
     
     ;; Remote client for Rust
     (lsp-register-client
      (make-lsp-client :new-connection (lsp-tramp-connection "~/.local/bin/rust-analyzer")
                       :major-modes '(rust-mode)
                       :remote? t
-                      :server-id 'rust-analyzer-remote))
-    )
-
-  (defun mech-lsp-mode-hook ()
-    ;; Configure company backends
-    (when (equal completion-framework "company")
-      (setq-local company-backends '(company-capf company-dabbrev company-dabbrev-code)))
-
-    ;; Configure completion styles
-    ;; In hopes of increasing completion speed, to no avail
-    ;; (setq-local completion-styles '(basic partial-completion emacs22))
-
-    )
+                      :server-id 'rust-analyzer-remote)))
   
-  (add-hook 'lsp-mode-hook #'mech-lsp-mode-hook)
-  
-  ;; Configure modes that automatically turn on lsp mode
-  (unless (fboundp 'lsp-deferred)
-    (autoload #'lsp-deferred "lsp-mode" nil nil))
-  (add-hook 'c-mode-hook #'lsp-deferred)
-
   ;; Python mode
   (straight-use-package 'lsp-pyright)
   ;; https://github.com/emacs-lsp/lsp-pyright/issues/6
@@ -145,13 +130,23 @@
 				  (require 'lsp-pyright)
 				  ))
   
+  ;; Configure modes that automatically turn on lsp mode
+  (unless (fboundp 'lsp-deferred)
+    (autoload #'lsp-deferred "lsp-mode" nil nil))
+  (add-hook 'c-mode-hook #'lsp-deferred)
   (add-hook 'python-mode-hook #'lsp-deferred)
   (add-hook 'rust-mode-hook #'lsp-deferred)
   (add-hook 'sh-mode-hook #'lsp-deferred)
   (add-hook 'c++-mode-hook #'lsp-deferred)
   (setq lsp-csharp-server-path "~/.local/omnisharp-roslyn/OmniSharp")
   (add-hook 'csharp-mode-hook #'lsp-deferred)
-  
+
+  (defun mech-lsp-mode-hook ()
+    ;; Configure company backends
+    (when (equal completion-framework "company")
+      (setq-local company-backends '(company-capf company-dabbrev company-dabbrev-code)))
+    )
+  ;; (add-hook 'lsp-mode-hook #'mech-lsp-mode-hook)
   )
 
 ;; Autoformatting

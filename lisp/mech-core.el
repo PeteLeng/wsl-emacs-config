@@ -35,6 +35,8 @@
   (global-set-key (kbd "C-;") 'comment-line)	;; Comment
   (global-set-key (kbd "C-z") 'undo)		;; Undo
   (global-set-key (kbd "M-#") 'mark-sexp)	;; Mark symbolic expression
+  (global-set-key (kbd "M-z") 'zap-up-to-char)  ;; Originally bound to zap-to-char
+  (global-set-key (kbd "C-.") 'repeat)
 
   ;; Isearch, see more using "M-s C-h"
 
@@ -44,9 +46,9 @@
   ;; Ibuffer
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-  ;; Emacs PGTK build bug, missing C-g keystrokes
-  ;; Possible related to gnome bug: https://www.reddit.com/r/emacs/comments/bnly4o/unable_to_exit_minibuffer_with_just_cg/
-  ;; (global-set-key (kbd "C-g") 'abort-recursive-edit)
+  ;; Missing C-g keystrokes in WSL pgtk build
+  ;; Possibly related to gnome bug:
+  ;; https://www.reddit.com/r/emacs/comments/bnly4o/unable_to_exit_minibuffer_with_just_cg/
 
   ;; Visible mode, show marker texts when org-hide-emphasis-markers is t
   ;; (global-set-key (kbd "C-c v") 'visible-mode)
@@ -60,9 +62,6 @@
   (setq-default cursor-type 'hbar)
   )
 
-(defun mech-core-dired ()
-  (setq dired-create-destination-dirs t))
-
 (defun mech-core ()
   ;; Keybindings
   (mech-core-keybindings)
@@ -71,7 +70,7 @@
   (mech-core-ui)
 
   ;; Dired
-  (mech-core-dired)
+  (setq dired-create-destination-dirs t)
 
   ;; Encoding
   ;; source: https://www.masteringemacs.org/article/working-coding-systems-unicode-emacs
@@ -94,12 +93,11 @@
     
   ;; Font
   (add-to-list 'default-frame-alist '(alpha-background . 90))
+  ;; Adjust for discrepency between built-in display and external monitor
   (cond
-   ((string-equal (getenv "MON") "on")
-    (message "Monitor on")
+   ((string-equal (getenv "EXT_MON") "t")
     (add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font-13")))
    (t
-    (message "Monitor off")
     (add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font Mono-18"))
     ))
 
@@ -121,11 +119,17 @@
   ;; (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
   (setq enable-recursive-minibuffers t)
 
-  ;; Performance
+  ;; LSP Performance settings
   (setq gc-cons-threshold (* 1024 1024 2))
   (setq read-process-output-max (* 1024 1024))
   
-  ;; Use windows browser in wsl2 for default sound support
+  ;; Other
+  (setq use-package-expand-minimally t)
+  (setq debug-on-error debug) ;; set to t for debugging
+  ;; (setq visible-bell t)
+  (setq ring-bell-function 'ignore)
+
+  ;; WSL browser settings
   ;; adapted from: https://hungyi.net/posts/browse-emacs-urls-wsl/
   (if (and (equal system-type 'gnu/linux)
 	   (string-match "microsoft" (shell-command-to-string "uname -a")))
@@ -134,12 +138,6 @@
        browse-url-generic-args '("/c" "start")
        browse-url-browser-function #'browse-url-generic
        ))
-
-  ;; Other
-  (setq use-package-expand-minimally t)
-  (setq debug-on-error debug) ;; set to t for debugging
-  ;; (setq visible-bell t)
-  (setq ring-bell-function 'ignore)
   )
 
 (provide 'mech-core)
