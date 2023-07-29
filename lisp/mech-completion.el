@@ -46,7 +46,7 @@
   (add-hook 'company-mode-hook #'company-box-mode)
   )
 
-;; corfu
+;; Corfu
 ;; lsp with corfu is so slow that it's unusable
 (when (eq completion-framework "corfu")
   (straight-use-package 'corfu)
@@ -65,7 +65,7 @@
 ;; (add-hook 'eshell-mode-hook #'mech-completion-shell-hook)
 
 ;; Shell-mode completion in WSL is too slow.
-;; Update, configure wsl to not include host path.
+;; Update, configure WSL to not include host (Windows) path.
 (defun sh-completion-table-exclude-path (orig &rest args)
   (let ((prev-exec-path exec-path))
     (dolist (path prev-exec-path)

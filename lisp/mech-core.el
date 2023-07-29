@@ -59,7 +59,7 @@
   (tool-bar-mode 0)
   (menu-bar-mode 0)
   (set-scroll-bar-mode nil)
-  (setq-default cursor-type 'hbar)
+  ;; (setq-default cursor-type 'hbar)
   )
 
 (defun mech-core ()
@@ -80,25 +80,25 @@
   ;; Replace default font with Symbola for symbol chars in default fontset
   ;; (list-character-sets 0) for the list of charsets
   ;; (setq use-default-font-for-symbols nil)
-  (set-fontset-font
-   t
-   'symbol
-   (cond
-    ((equal system-type 'windows-nt)
-     (cond ((member "MesloLGM Nerd Font Mono" (font-family-list)) "MesloLGM Nerd Font Mono")))
-    ((equal system-type 'gnu/linux)
-     (cond ((member "Symbola" (font-family-list)) "Symbola")
-	   ((member "Symbols Nerd Font Mono" (font-family-list)) "Symbols Nerd Font Mono"))))
-   )
+  ;; (set-fontset-font
+  ;;  t
+  ;;  'symbol
+  ;;  (cond
+  ;;   ((equal system-type 'windows-nt)
+  ;;    (cond ((member "MesloLGM Nerd Font Mono" (font-family-list)) "MesloLGM Nerd Font Mono")))
+  ;;   ((equal system-type 'gnu/linux)
+  ;;    (cond ((member "Symbola" (font-family-list)) "Symbola")
+  ;; 	   ((member "Symbols Nerd Font Mono" (font-family-list)) "Symbols Nerd Font Mono"))))
+  ;;  )
     
   ;; Font
   (add-to-list 'default-frame-alist '(alpha-background . 90))
   ;; Adjust for discrepency between built-in display and external monitor
   (cond
-   ((string-equal (getenv "EXT_MON") "t")
-    (add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font-13")))
+   ((string-equal (getenv "EXT_DISPLAY") "t")
+    (add-to-list 'default-frame-alist '(font . "FantasqueSansM Nerd Font-14")))
    (t
-    (add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font Mono-18"))
+    (add-to-list 'default-frame-alist '(font . "FantasqueSansM Nerd Font-14"))
     ))
 
   ;; Editing
