@@ -68,7 +68,15 @@
 (autoload 'rust-mode "rust-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
 
-;; Bash
+;; Racket
+(straight-use-package 'racket-mode)
+
+;; Ocaml
+(straight-use-package 'tuareg)
+
+;; Ada lovelace
+;; cannot compile, frustrating
+;; (straight-use-package 'ada-mode)
 
 ;; JS
 
@@ -140,6 +148,7 @@
   (add-hook 'c++-mode-hook #'lsp-deferred)
   (setq lsp-csharp-server-path "~/.local/omnisharp-roslyn/OmniSharp")
   (add-hook 'csharp-mode-hook #'lsp-deferred)
+  (add-hook 'racket-mode-hook #'lsp-deferred)
 
   (defun mech-lsp-mode-hook ()
     ;; Configure company backends

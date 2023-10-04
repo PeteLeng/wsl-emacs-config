@@ -2,9 +2,11 @@
 (straight-use-package 'pdf-tools)
 (add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
 (unless (fboundp 'pdf-view-mode)
-  (autoload #'pdf-view-mode "pdf-view" nil t))
+  (autoload #'pdf-view-mode "pdf-view" nil t)
+  (require 'pdf-tools)
+  )
 (with-eval-after-load "pdf-tools"
-  (pdf-tools-install)
+  ;; (pdf-tools-install)
   (setq-default pdf-view-display-size 'fit-width)
   ;; (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
   ;; (setq pdf-annot-activate-created-annotations t)
@@ -26,12 +28,23 @@
   ;; (define-key pdf-view-mode-map (kbd "C-k") 'pdf-view-previous-page-command)
   )
 
-;; (add-hook 'pdf-view-mode-hook #'pdf-tools-enable-minor-modes)
+;; incompatible with pdf-view-mode
 (defun mech-pdfview-mode-hook ()
   (display-line-numbers-mode -1)
   )
 (add-hook 'pdf-view-mode-hook #'mech-pdfview-mode-hook)
+(add-hook 'pdf-view-mode-hook #'pdf-tools-enable-minor-modes)
 
 ;; EPUB
 (straight-use-package 'nov)
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+
+;; Web feed
+(straight-use-package 'elfeed)
+(setq elfeed-feeds
+      '("http://nullprogram.com/feed/"
+	"https://project-mage.org/rss.xml"
+	"https://karthinks.com/index.xml"
+	"https://blog.trailofbits.com/feed/"
+	"https://andreyor.st/feed.xml"))
+(keymap-global-set "C-c w" 'elfeed)

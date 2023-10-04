@@ -1,3 +1,8 @@
+;; testing global variables
+(defvar mech-global -99)
+(defvar mech-global 100)
+(defvar vglob -99)
+
 ;; Asynchronous IO library
 (straight-use-package 'aio)
 
@@ -76,3 +81,6 @@
   (dolist (f (font-family-list))
     (when (string-match regex f)
       (insert (format "%s\n" f)))))
+
+
+

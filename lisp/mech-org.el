@@ -112,6 +112,31 @@
 (define-key global-map (kbd "C-c c") 'org-capture)
 ;; (define-key global-map (kbd "") 'org-insert-todo-heading)
 
+;; Org Hugo support
+(straight-use-package 'ox-hugo)
+(with-eval-after-load 'ox
+  (require 'ox-hugo))
+
+;; Custom utilities
+(defun org-current-heading ()
+  "Move to the fron of the current org heading.
+If point is before the first heading (if exists),
+move to the first heading."
+  (interactive)
+  ;; for full compatibility,
+  ;; consider using org-get-limited-outline-regexp instead.
+  (let ((origp (point))
+	(regexp (concat "^" org-outline-regexp)))
+    ;; the trick is to first move to the end of line
+    ;; then do a backward regexp search
+    ;; do a forward search if point is before all outline headings.
+    (end-of-line)
+    (cond
+     ((re-search-backward regexp nil t))
+     ((re-search-forward regexp nil t) (forward-line 0))
+     (t
+      (goto-char origp)))))
+
 ;; Other
 (with-eval-after-load 'org
   ;; Collapsed view
@@ -126,6 +151,14 @@
 
   ;; Set latex scale
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
+
+  ;; Set latex code backend
+  (setq org-latex-src-block-backend 'listings)
+  (add-to-list 'org-latex-packages-alist '("" "listings"))
+  (add-to-list 'org-latex-packages-alist '("" "color"))
+
+  ;; custom keybindings
+  (keymap-set org-mode-map "M-j h" 'org-current-heading)
   )
 
 ;;; mech-org.el ends here.

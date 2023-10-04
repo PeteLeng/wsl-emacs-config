@@ -24,8 +24,8 @@
   (global-set-key (kbd "M-n") 'forward-sentence)
   ;; (global-set-key (kbd "M-a") 'backward-sexp)
   ;; (global-set-key (kbd "M-e") 'forward-sexp)
-  (global-set-key (kbd "C-<") 'backward-paragraph)
-  (global-set-key (kbd "C->") 'forward-paragraph)
+  (global-set-key (kbd "M-[") 'backward-paragraph)
+  (global-set-key (kbd "M-]") 'forward-paragraph)
   (if (equal system-type 'windows-nt)
       (progn
 	(global-set-key (kbd "s-p") 'previous-buffer)
@@ -34,14 +34,29 @@
   ;; Editing
   (global-set-key (kbd "C-;") 'comment-line)	;; Comment
   (global-set-key (kbd "C-z") 'undo)		;; Undo
-  (global-set-key (kbd "M-#") 'mark-sexp)	;; Mark symbolic expression
-  (global-set-key (kbd "M-z") 'zap-up-to-char)  ;; Originally bound to zap-to-char
   (global-set-key (kbd "C-.") 'repeat)
+  ;; C-j originally bind to electric-newline-and-maybe-indent
+  (keymap-global-set "C-j" 'default-indent-new-line)
+  (global-set-key (kbd "M-z") 'zap-up-to-char)  ;; Originally bound to zap-to-char
 
+  ;; Mark
+  (defvar marksman-map (make-sparse-keymap) "Marksman")
+  (define-minor-mode marksman-mode "Navis Nobilite"
+    :global t
+    :keymap marksman-map)
+  (keymap-set marksman-map "C-x m ." 'pop-to-mark-command)
+  (keymap-set marksman-map "C-x m m" 'pop-global-mark)
+  (marksman-mode 1)
+  ;; C-h b to see more on marking
+  ;; M-@ marks word, M-h marks paragraph, C-M-h marks function
+  (global-set-key (kbd "M-#") 'mark-sexp)
+
+  ;; Highlighting
+  
   ;; Isearch, see more using "M-s C-h"
-
+  
   ;; Imenu
-  (global-set-key (kbd "C-c m") 'imenu)
+  (global-set-key (kbd "C-c i") 'imenu)
 
   ;; Ibuffer
   (global-set-key (kbd "C-x C-b") 'ibuffer)

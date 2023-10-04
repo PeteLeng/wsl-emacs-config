@@ -46,11 +46,22 @@
     (setq org-refile-targets (list (cons proj-dirs (cons :level 1))))
     )
 
-  ;; Subdirectories
+  ;; capture templates with targets in different directories
+  (defun get-blog-tmpl ()
+    (let ((f (expand-file-name "../tmpls/blog.org" org-roam-directory)))
+      (with-temp-buffer
+	(insert-file-contents f)
+	(buffer-string))))
+
+  (defun get-latex-tmpl ()
+    (let ((f (expand-file-name "../tmpls/latex.org" org-roam-directory)))
+      (with-temp-buffer
+	(insert-file-contents f)
+	(buffer-string))))
+  
   (defvar roam-templates
     '(("d" "default" plain "%?"
-       :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-		  "#+title: ${title}\n#+options: toc:nil ^:nil \\n:t\n")
+       :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
        :unnarrowed t)
       ("a" "archives" plain
        nil
@@ -61,16 +72,20 @@
        :target (file+head "projs/%<%Y%m%d%H%M%S>-${slug}.org"
 			  ":PROPERTIES:\n:DATE_CREATED: %U\n:END:\n#+title: ${title}")
        :unnarrowed t)
-      ("c" "Courses")
-      ("ca" "assignments" plain
-       nil
-       :target (file+head "courses/asgmts/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
-       :unnarrowed t)
-      ("cl" "lectures" plain
-       nil
-       :target (file+head "courses/lects/%<%Y%m%d%H%M%S>-${slug}.org"
-			  ":PROPERTIES:\n:DATA_CREATED: %U\n:END:\n#+title: ${title}\n")
-       :unnarrowed t)))
+      ("b" "blogs" plain (function get-blog-tmpl)
+       :target (file+head "blogs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}"))
+      ("l" "latex" plain (function get-latex-tmpl)
+       :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}"))
+      
+      ;; ("c" "Courses")
+      ;; ("cl" "lectures" plain
+      ;;  nil
+      ;;  :target (file+head "courses/lects/%<%Y%m%d%H%M%S>-${slug}.org"
+      ;; 			  ":PROPERTIES:\n:DATA_CREATED: %U\n:END:\n#+title: ${title}\n") 
+      ;;  :unnarrowed t)
+      
+      ))
+  
   ;; (dolist (tmpl templates)
   ;;   (push tmpl org-roam-capture-templates))
   ;; (setq org-roam-capture-templates (nconc org-roam-capture-templates roam-templates))
