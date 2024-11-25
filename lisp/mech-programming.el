@@ -80,6 +80,9 @@
 
 ;; JS
 
+;; Java
+
+
 ;; Lsp-Bridge (aims to be the fastest lsp client out there)
 ;; Dependencies
 (straight-use-package 'posframe)
@@ -150,6 +153,21 @@
   (add-hook 'csharp-mode-hook #'lsp-deferred)
   (add-hook 'racket-mode-hook #'lsp-deferred)
 
+  ;; Java
+  (straight-use-package 'lsp-java)
+  (setq lsp-java-server-install-dir "/home/pete/opt/java-lsp/")
+  (setq lsp-java-format-settings-url "https://github.com/redhat-developer/vscode-java/wiki/Formatter-settings")
+  (add-hook 'java-mode-hook #'(lambda ()
+				(require 'lsp-java)
+				(lsp-deferred)))
+
+  ;; Ruby
+  (add-hook 'ruby-mode-hook #'(lambda ()
+				(lsp-deferred)
+				;; (push 'rubocop-ls lsp-disabled-clients)
+				))
+  ;; (setq lsp-rubocop-use-bundler t)
+
   (defun mech-lsp-mode-hook ()
     ;; Configure company backends
     (when (equal completion-framework "company")
@@ -161,5 +179,8 @@
 ;; Autoformatting
 (straight-use-package 'apheleia)
 (apheleia-global-mode +1)
+(with-eval-after-load 'apheleia
+  (setf (cdr (assoc 'google-java-format apheleia-formatters))
+	'("java" "-jar" "/home/pete/opt/google-java-format-1.18.1-all-deps.jar" filepath)))
 
 ;; mech-programming.el ends here.

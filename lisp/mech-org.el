@@ -117,6 +117,11 @@
 (with-eval-after-load 'ox
   (require 'ox-hugo))
 
+;; csl
+(straight-use-package 'citeproc)
+(with-eval-after-load 'ox
+  (require 'citeproc))
+
 ;; Custom utilities
 (defun org-current-heading ()
   "Move to the fron of the current org heading.
@@ -139,6 +144,17 @@ move to the first heading."
 
 ;; Other
 (with-eval-after-load 'org
+  ;; citation
+  (setq org-cite-global-bibliography '("~/org/bib/cite.bib"))
+  (setq org-cite-export-processors '((latex . (biblatex "authoryear-icomp"))
+				     (t basic)))
+  ;; https://emacs.stackexchange.com/a/60727
+  (setq org-latex-pdf-process
+	'("pdflatex -interaction nonstopmode -output-directory %o %f"
+          "biber --output-directory %o $(basename %f .tex)"
+          "pdflatex -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -interaction nonstopmode -output-directory %o %f"))
+  
   ;; Collapsed view
   (setq org-startup-folded 'nofold)
 
@@ -159,6 +175,7 @@ move to the first heading."
 
   ;; custom keybindings
   (keymap-set org-mode-map "M-j h" 'org-current-heading)
+
   )
 
 ;;; mech-org.el ends here.

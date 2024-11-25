@@ -16,6 +16,7 @@
 (vertico-mode)
 (setq vertico-count 7)
 (setq vertico-resize nil)
+(setq vertico-sort-function nil)
 
 ;; Company
 (when (equal completion-framework "company")

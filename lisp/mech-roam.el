@@ -10,11 +10,13 @@
   (autoload #'org-roam-node-insert "org-roam" nil t))
 (unless (fboundp 'org-roam-node-random)
   (autoload #'org-roam-node-random "org-roam" nil t))
+(unless (fboundp 'org-roam-dailies-map)
+  (autoload 'org-roam-dailies-map "org-roam-dailies" nil t 'keymap))
 
 (define-key global-map (kbd "C-c n f") 'org-roam-node-find)
 (define-key global-map (kbd "C-c n i") 'org-roam-node-insert)
 (define-key global-map (kbd "C-c n r") 'org-roam-node-random)
-
+(define-key global-map (kbd "C-c n j") 'org-roam-dailies-map)
 
 (with-eval-after-load 'org-roam
   (org-roam-db-autosync-mode)
@@ -58,9 +60,20 @@
       (with-temp-buffer
 	(insert-file-contents f)
 	(buffer-string))))
+
+  (defmacro roam-capture-get-tmpl (fname)
+    `(lambda ()
+       (get-tmpl ,fname)))
+
+  (defun get-tmpl (tname)
+    (let ((f (expand-file-name (format "../tmpls/%s.org" tname)
+			       org-roam-directory)))
+      (with-temp-buffer
+	(insert-file-contents f)
+	(buffer-string))))
   
   (defvar roam-templates
-    '(("d" "default" plain "%?"
+    `(("d" "default" plain "%?"
        :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
        :unnarrowed t)
       ("a" "archives" plain
@@ -72,10 +85,12 @@
        :target (file+head "projs/%<%Y%m%d%H%M%S>-${slug}.org"
 			  ":PROPERTIES:\n:DATE_CREATED: %U\n:END:\n#+title: ${title}")
        :unnarrowed t)
-      ("b" "blogs" plain (function get-blog-tmpl)
-       :target (file+head "blogs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}"))
-      ("l" "latex" plain (function get-latex-tmpl)
+      ("t" "latex" plain (function ,(roam-capture-get-tmpl "latex"))
        :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}"))
+      ("b" "blogs" plain (function ,(roam-capture-get-tmpl "blog"))
+       :target (file+head "blogs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}"))
+      ("l" "letter" plain (function ,(roam-capture-get-tmpl "latex"))
+       :target (file+head "letters/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}"))
       
       ;; ("c" "Courses")
       ;; ("cl" "lectures" plain
@@ -90,6 +105,29 @@
   ;;   (push tmpl org-roam-capture-templates))
   ;; (setq org-roam-capture-templates (nconc org-roam-capture-templates roam-templates))
   (setq org-roam-capture-templates roam-templates)
+
+  ;; daily journal
+  (setq org-roam-dailies-directory "journal/")
+  (setq org-roam-dailies-capture-templates
+	'(("j" "journal" plain
+           "* %?"
+           :target (file+head "J-%<%Y-%m-%d>.org"
+                              "#+title: J-%<%Y-%m-%d>\n")
+	   :empty-lines 1
+	   :unnarrowed t)))
+
+  (defun trace-org-roam-capture- (orig &rest args)
+    (message (format "---\narguments for roam capture:\n%s\n" args))
+    (message "---\n")
+    (apply orig args))
+
+  (defun trace-org-capture (orig &rest args)
+    (message (format "---\narguments for org capture:\n%s\n" args))
+    (message "---\n")
+    (apply orig args))
+  
+  ;; (advice-add 'org-roam-capture- :around #'trace-org-roam-capture-)
+  ;; (advice-add 'org-capture :around #'trace-org-capture)
   )
 
 ;;; mech-roam ends here.

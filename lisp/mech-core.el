@@ -61,6 +61,12 @@
   ;; Ibuffer
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 
+  ;; Windows
+  ;; - Help buffers
+  ;; (setq help-window-select t)
+  ;; - Dictionaries
+  ;; see 'mech-reading.el'
+
   ;; Missing C-g keystrokes in WSL pgtk build
   ;; Possibly related to gnome bug:
   ;; https://www.reddit.com/r/emacs/comments/bnly4o/unable_to_exit_minibuffer_with_just_cg/

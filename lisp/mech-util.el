@@ -78,6 +78,7 @@
     headlines))
 
 (defun mech-get-fonts (regex)
+  (insert "\n")
   (dolist (f (font-family-list))
     (when (string-match regex f)
       (insert (format "%s\n" f)))))
